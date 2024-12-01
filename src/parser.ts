@@ -1,4 +1,4 @@
-import postcss, { type Container, type Document, type Root } from 'postcss';
+import postcss, { type Container } from 'postcss';
 
 // derived from https://github.com/postcss/postcss-js/blob/b3db658b932b42f6ac14ca0b1d50f50c4569805b/parser.js, MIT, Copyright 2015 Andrey Sitnik <andrey@sitnik.ru>
 const IMPORTANT = /\s*!important\s*$/i,
@@ -78,6 +78,6 @@ function parse<T extends Container>(obj: Record<string, any>, parent: T): T {
   return parent;
 }
 
-export default function parser(obj: Document | Root) {
+export default function parser(obj: Record<string, any>) {
   return parse(obj, postcss.root());
 }

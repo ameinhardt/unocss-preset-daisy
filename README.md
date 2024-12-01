@@ -18,8 +18,8 @@ npm install unocss daisyui unocss-preset-daisy
 
 ```js
 import { presetUno } from 'unocss';
-import unocss from 'unocss/vite';
 import { presetDaisy } from 'unocss-preset-daisy';
+import unocss from 'unocss/vite';
 import { defineConfig } from 'vite';
 
 export default defineConfig({
@@ -41,8 +41,8 @@ import 'uno.css';
 ```js
 import { defineConfig } from 'astro/config';
 import { presetUno } from 'unocss';
-import unocss from 'unocss/astro';
 import { presetDaisy } from 'unocss-preset-daisy';
+import unocss from 'unocss/astro';
 
 export default defineConfig({
   integrations: [
@@ -90,8 +90,6 @@ This preset accepts [the same config as daisyUI](https://daisyui.com/docs/config
 
 ## Limitations
 
-**This is not a full daisyUI port.** All daisyUI components/utilities should work but they may not work with some UnoCSS features:
-
-- [#14](https://github.com/ameinhardt/unocss-preset-daisy/issues/14): [variants](https://windicss.org/utilities/general/variants.html) do not work
+**This is not a full daisyUI port.** All daisyUI components/utilities should work but they may not work with some UnoCSS features.
 
 **Unused styles may be imported.** This is both due to lots of hacks being used and how UnoCSS works. However, the preset will try to figure out the minimum styles needed, thus the cost is trivial most of the time.

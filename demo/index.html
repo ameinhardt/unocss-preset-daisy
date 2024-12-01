@@ -4,7 +4,7 @@
 <meta name="color-scheme" content="light dark" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-<body class="lg:max-w-screen-md mx-auto p-4">
+<body class="max-w-screen-md mx-auto p-4">
 	<div class="flex items-center">
 		<h1 class="text-5xl font-300 mr-4">UnoCSS + daisyUI</h1>
 		<a href="https://github.com/ameinhardt/unocss-preset-daisy">
@@ -14,13 +14,13 @@
 
 	<h2 class="my-2 text-3xl">Actions</h2>
 
-	<div class="my-4">
-		<h3 class="font-bold my-1 text-xl">Button</h3>
+	<h3 class="font-bold my-1 text-xl">Button</h3>
+	<div class="my-4 space-y-4">
 		<div>
 			<h4 class="font-bold">Buttons with brand colors</h4>
 			<button class="btn">Button</button>
 			<button class="btn btn-neutral">Neutral</button>
-			<button class="lg:btn btn-primary">Primary</button>
+			<button class="btn btn-primary">Primary</button>
 			<button class="btn btn-secondary">Secondary</button>
 			<button class="btn btn-accent">Accent</button>
 			<button class="btn btn-ghost">Ghost</button>
@@ -46,6 +46,14 @@
 			<button class="btn">Normal</button>
 			<button class="btn btn-sm">Small</button>
 			<button class="btn btn-xs">Tiny</button>
+		</div>
+		<div>
+			<h4 class="font-bold">Responsive elements</h4>
+			<button class="btn 2xl:btn-primary">2xl</button>
+			<button class="btn xl:btn-primary">xl</button>
+			<button class="btn lg:btn-primary">lg</button>
+			<button class="btn md:btn-primary">md</button>
+			<button class="btn sm:btn-primary">sm</button>
 		</div>
 	</div>
 
@@ -104,7 +112,7 @@
 		<div class="card w-96 bg-base-100 shadow-xl">
 			<figure>
 				<img
-					src="https://daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.jpg"
+					src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
 					alt="Shoes"
 				/>
 			</figure>
