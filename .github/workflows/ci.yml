@@ -9,6 +9,9 @@ on:
     branches:
       - main
 
+env:
+  BASE_URL: '/unocss-preset-daisy/'
+
 jobs:
   build_demo:
     runs-on: ubuntu-latest
