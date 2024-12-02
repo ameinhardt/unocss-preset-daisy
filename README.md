@@ -1,13 +1,15 @@
-# unocss-preset-daisy
+# @ameinhardt/unocss-preset-daisy
 
 > [UnoCSS](https://github.com/unocss/unocss) preset for [daisyUI](https://github.com/saadeghi/daisyui)
 
-[Checkout the demo!](https://unocss-preset-daisy.vercel.app/)
+This daisyui preset directly uses the styles from your daisyui v4 version without pregeneration, supporting variants.
+
+[Demo here](https://ameinhardt.github.io/unocss-preset-daisy/)
 
 ## Installation
 
 ```sh
-npm install unocss daisyui unocss-preset-daisy
+npm install unocss daisyui @ameinhardt/unocss-preset-daisy
 ```
 
 ## Usage
@@ -17,8 +19,8 @@ npm install unocss daisyui unocss-preset-daisy
 ### Vite
 
 ```js
+import { presetDaisy } from '@ameinhardt/unocss-preset-daisy';
 import { presetUno } from 'unocss';
-import { presetDaisy } from 'unocss-preset-daisy';
 import unocss from 'unocss/vite';
 import { defineConfig } from 'vite';
 
@@ -39,9 +41,9 @@ import 'uno.css';
 ### Astro
 
 ```js
+import { presetDaisy } from '@ameinhardt/unocss-preset-daisy';
 import { defineConfig } from 'astro/config';
 import { presetUno } from 'unocss';
-import { presetDaisy } from 'unocss-preset-daisy';
 import unocss from 'unocss/astro';
 
 export default defineConfig({
@@ -59,9 +61,9 @@ export default defineConfig({
 To use UnoCSS with Nuxt, `@unocss/nuxt` must be installed as well.
 
 ```js
+import { presetDaisy } from '@ameinhardt/unocss-preset-daisy';
 import { defineNuxtConfig } from 'nuxt/config';
 import { presetUno } from 'unocss';
-import { presetDaisy } from 'unocss-preset-daisy';
 
 export default defineNuxtConfig({
   css: ['@unocss/reset/tailwind.css'],
@@ -92,4 +94,4 @@ This preset accepts [the same config as daisyUI](https://daisyui.com/docs/config
 
 **This is not a full daisyUI port.** All daisyUI components/utilities should work but they may not work with some UnoCSS features.
 
-**Unused styles may be imported.** This is both due to lots of hacks being used and how UnoCSS works. However, the preset will try to figure out the minimum styles needed, thus the cost is trivial most of the time.
+**Some unused styles may be imported.** This is both due to lots of hacks being used and how UnoCSS works. However, the preset will try to figure out the minimum styles needed, thus the cost is trivial most of the time.

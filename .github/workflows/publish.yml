@@ -11,25 +11,33 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 20
-      - run: npm i -g pnpm@8
-      - uses: actions/setup-node@v3
+
+      - run: npm i -g pnpm
+
+      - uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 'lts/*'
           cache: pnpm
           registry-url: https://registry.npmjs.org/
+
       - run: pnpm install
+
       - run: |
           git config user.name github-actions[bot]
           git config user.email github-actions[bot]@users.noreply.github.com
-      - run: npm version ${{ github.event.inputs.version }}
-      - run: npm publish --access public
+
+      - run: pnpm version ${{ github.event.inputs.version }}
+
+      - run: pnpm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
       - run: git push --follow-tags
-      - uses: fregante/release-with-changelog@v3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          exclude: true
+
+      - name: Create release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release create "$GITHUB_REF_NAME" # GITHUB_REF_NAME is the tag name in `on.push.tags` workflows

@@ -1,5 +1,5 @@
 {
-  "name": "unocss-preset-daisy",
+  "name": "@ameinhardt/unocss-preset-daisy",
   "type": "module",
   "version": "8.1.0",
   "packageManager": "pnpm@9.13.2",
@@ -15,25 +15,27 @@
   "scripts": {
     "build:demo": "vite build demo",
     "build": "unbuild",
-    "dev": "vite dev demo",
     "prepack": "npm run build",
+    "prepare": "npm run build",
     "lint": "eslint . --fix",
     "preview": "vite preview demo --host",
     "start": "vite demo --host"
   },
+  "peerDependencies": {
+    "daisyui": "^4.12.14",
+    "unocss": "^0.65.0"
+  },
   "dependencies": {
     "@tailwindcss/nesting": "0.0.0-insiders.565cd3e",
-    "daisyui": "^4.12.14",
-    "postcss": "8.4.47",
-    "postcss-nested": "^7.0.2",
-    "unocss": "^0.65.0-beta.3"
+    "postcss": "8.4.49",
+    "postcss-nested": "^7.0.2"
   },
   "devDependencies": {
     "@antfu/eslint-config": "3.11.2",
     "@iconify-json/octicon": "^1.2.1",
     "@types/node": "^22.10.1",
-    "@unocss/postcss": "^0.65.0-beta.3",
-    "@unocss/reset": "^0.65.0-beta.3",
+    "@unocss/postcss": "^0.65.0",
+    "@unocss/reset": "^0.65.0",
     "eslint": "^9.16.0",
     "eslint-plugin-format": "^0.1.3",
     "tsx": "^4.19.2",
