@@ -1,27 +1,43 @@
 name: CI
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
-  pack:
+  build_demo:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - run: npm i -g pnpm@8
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+
+      - run: npm i -g pnpm
+
+      - uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 'lts/*'
           cache: pnpm
+          registry-url: https://registry.npmjs.org/
+
       - run: pnpm install
-      - run: npm pack
-  lint:
+
+      - name: Upload static files as artifact
+        id: deployment
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: demo/dist/
+
+  # Deployment job
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
+    needs: build
     steps:
-      - uses: actions/checkout@v3
-      - run: npm i -g pnpm@8
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 18
-          cache: pnpm
-      - run: pnpm install
-      - run: pnpm xo
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

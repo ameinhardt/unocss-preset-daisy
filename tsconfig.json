@@ -1,4 +1,19 @@
 {
-	"extends": "@sindresorhus/tsconfig",
-	"files": ["index.ts", "daisyui.d.ts"]
+  "compilerOptions": {
+    "target": "ESNext",
+    "lib": ["ESNext", "DOM"],
+    "rootDir": "src",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "strict": false,
+    "declaration": true,
+    "outDir": "dist",
+    "sourceMap": true,
+    "skipLibCheck": true
+  },
+  "include": [
+    "package.json",
+    "src"
+  ],
+  "exclude": ["dist", "node_modules"]
 }

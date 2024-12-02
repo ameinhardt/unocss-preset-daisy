@@ -1,0 +1,36 @@
+{
+  "files.exclude": {
+    "**/dist": true
+  },
+  "files.trimTrailingWhitespace": true,
+  "files.eol": "\n",
+  "files.insertFinalNewline": true,
+  "files.trimFinalNewlines": true,
+  "eslint.useFlatConfig": true,
+  "eslint.validate": [
+    "javascript",
+    "typescript",
+    "html",
+    "markdown",
+    "json",
+    "jsonc"
+  ],
+  "eslint.format.enable": false,
+  "eslint.workingDirectories": [
+    "demo",
+    "src"
+  ],
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "editor.trimAutoWhitespace": true,
+  "editor.formatOnSave": false,
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "never",
+    "source.fixAll.eslint": "explicit"
+  },
+  "git.alwaysSignOff": true,
+  "github.gitAuthentication": false,
+  "css.lint.unknownAtRules": "ignore",
+  "scss.lint.unknownAtRules": "ignore",
+  "npm.packageManager": "pnpm"
+}
