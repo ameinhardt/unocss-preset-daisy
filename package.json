@@ -26,7 +26,6 @@
     "unocss": "^0.65.0"
   },
   "dependencies": {
-    "@tailwindcss/nesting": "0.0.0-insiders.565cd3e",
     "postcss": "8.4.49",
     "postcss-nested": "^7.0.2"
   },
@@ -34,7 +33,6 @@
     "@antfu/eslint-config": "3.11.2",
     "@iconify-json/octicon": "^1.2.1",
     "@types/node": "^22.10.1",
-    "@unocss/postcss": "^0.65.0",
     "@unocss/reset": "^0.65.0",
     "eslint": "^9.16.0",
     "eslint-plugin-format": "^0.1.3",

@@ -4,10 +4,7 @@ export default defineBuildConfig({
   clean: true,
   declaration: true,
   entries: ['./src/index'],
-  externals: [
-    '@unocss/postcss/esm',
-    'culori/require'
-  ],
+  externals: [],
   rollup: {
     emitCJS: false,
     inlineDependencies: false

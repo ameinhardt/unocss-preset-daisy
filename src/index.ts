@@ -1,6 +1,7 @@
 import type { ChildNode, Declaration, Processor, Root } from 'postcss';
-import type { CSSObjectInput, DynamicRule, Preflight, Preset, UserConfig } from 'unocss';
-import { createPlugin } from '@unocss/postcss/esm';
+import type { CSSObjectInput, DynamicRule, Preflight, Preset } from 'unocss';
+// postcss plugin works well will @tailwindcss/nesting
+// import { createPlugin } from '@unocss/postcss/esm';
 import base from 'daisyui/dist/base.js';
 import styled from 'daisyui/dist/styled.js';
 import unstyled from 'daisyui/dist/unstyled.js';
@@ -11,7 +12,7 @@ import functions from 'daisyui/src/theming/functions.js';
 import colors from 'daisyui/src/theming/index.js';
 import themes from 'daisyui/src/theming/themes.js';
 import postcss from 'postcss';
-import { presetUno, symbols } from 'unocss';
+import { symbols } from 'unocss';
 import parse from './parser.js';
 
 const CSSCLASS = /\.(?<name>[-\w\P{ASCII}]+)/gu,
@@ -122,7 +123,15 @@ export function presetDaisy(userOptions: Partial<typeof defaultOptions> = {}): P
     classes: ['components', 'utilities'?] = ['components'],
     styles: ['unstyled', 'styled'?] = ['unstyled'],
     preflights: Preflight[] = [],
-    configOrPath: UserConfig = {
+    processor = postcss({
+      Declaration: (decl) => {
+        decl.prop = fixCss(decl.prop);
+        decl.value = fixCss(decl.value);
+      },
+      postcssPlugin: 'fix-css'
+    });
+    /*  no need for unocss/postcss, as there's no @apply, @screen, @theme in input. Otherwise:
+    createPlugin({ configOrPath: {
       configFile: false,
       presets: [presetUno(), () => presetDaisy({
         ...userOptions,
@@ -130,14 +139,7 @@ export function presetDaisy(userOptions: Partial<typeof defaultOptions> = {}): P
         themes: false,
         utils: false
       })]
-    },
-    processor = postcss({
-      Declaration: (decl) => {
-        decl.prop = fixCss(decl.prop);
-        decl.value = fixCss(decl.value);
-      },
-      postcssPlugin: 'fix-css'
-    }, createPlugin({ configOrPath }));
+    } }); */
 
   if (options.utils) {
     preflights.push(...getUnoCssElements(processor, parse(FOLDERS['utilities/global']), cssObjectInputsByClassToken));

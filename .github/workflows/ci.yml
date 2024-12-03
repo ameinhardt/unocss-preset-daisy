@@ -10,7 +10,7 @@ on:
       - main
 
 env:
-  BASE_URL: '/unocss-preset-daisy/'
+  BASE_URL: /unocss-preset-daisy/
 
 jobs:
   build_demo:
