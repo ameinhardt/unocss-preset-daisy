@@ -1,4 +1,5 @@
-import postcss, { type Container } from 'postcss';
+import type { Container, Root } from 'postcss';
+import postcss from 'postcss';
 
 // derived from https://github.com/postcss/postcss-js/blob/b3db658b932b42f6ac14ca0b1d50f50c4569805b/parser.js, MIT, Copyright 2015 Andrey Sitnik <andrey@sitnik.ru>
 const IMPORTANT = /\s*!important\s*$/i,
@@ -49,7 +50,7 @@ function atRule(parent: Container, parts: string[], value: any) {
   parent.push(node);
 }
 
-function parse<T extends Container>(obj: Record<string, any>, parent: T): T {
+export default function parse(obj: Record<string, any>, parent: Container = postcss.root()): Container {
   for (const name in obj) {
     const value = obj[name];
     if (value === null || typeof value === 'undefined') {
@@ -76,8 +77,4 @@ function parse<T extends Container>(obj: Record<string, any>, parent: T): T {
     }
   }
   return parent;
-}
-
-export default function parser(obj: Record<string, any>) {
-  return parse(obj, postcss.root());
 }

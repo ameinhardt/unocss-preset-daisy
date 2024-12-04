@@ -1,35 +1,25 @@
-import type { ChildNode, Declaration, Processor, Root } from 'postcss';
+import type { ChildNode, Declaration, Processor } from 'postcss';
 import type { CSSObjectInput, DynamicRule, Preflight, Preset } from 'unocss';
-// postcss plugin works well will @tailwindcss/nesting
 // import { createPlugin } from '@unocss/postcss/esm';
-import base from 'daisyui/dist/base.js';
-import styled from 'daisyui/dist/styled.js';
-import unstyled from 'daisyui/dist/unstyled.js';
-import utilStyled from 'daisyui/dist/utilities-styled.js';
-import utilUnstyled from 'daisyui/dist/utilities-unstyled.js';
-import utilityClasses from 'daisyui/dist/utilities.js';
-import functions from 'daisyui/src/theming/functions.js';
-import colors from 'daisyui/src/theming/index.js';
-import themes from 'daisyui/src/theming/themes.js';
+import Nesting from '@tailwindcss/nesting';
+import daisyui from 'daisyui';
 import postcss from 'postcss';
+import Stringifier from 'postcss/lib/stringifier';
 import { symbols } from 'unocss';
 import parse from './parser.js';
 
-const CSSCLASS = /\.(?<name>[-\w\P{ASCII}]+)/gu,
-  FOLDERS = {
-    'base': base,
-    'components/styled': styled,
-    'components/unstyled': unstyled,
-    'utilities/global': utilityClasses,
-    'utilities/styled': utilStyled,
-    'utilities/unstyled': utilUnstyled
-  } as Record<string, Record<string, any>>;
-
-function fixCss(css: string) {
-  return css
-    .replaceAll(/(var\s*\(\s*)?--(?:tw-)+([-\w]+)?/g, '$1--un-$2')
-    .replaceAll('<alpha-value>', 'var(--un-bg-opacity, 1)');
+interface Options {
+  base?: boolean
+  darkTheme?: boolean
+  logs?: boolean // ignored
+  prefix?: string
+  styled?: boolean
+  themeRoot?: string // :root
+  themes?: string[]
+  utils?: boolean
 }
+
+const CSSCLASS = /\.(?<name>[-\w\P{ASCII}]+)/gu;
 
 function *flattenRules(nodes: ChildNode[], parents: string[] = []): Generator<[string[], string, Declaration[]] | string> {
   for (const node of nodes) {
@@ -60,29 +50,23 @@ function *flattenRules(nodes: ChildNode[], parents: string[] = []): Generator<[s
   }
 }
 
-function getUnoCssElements(processor: Processor, root: Root, cssObjectInputsByClassToken: Map<string, Promise<CSSObjectInput[]>[]>, layer?: string): Preflight[] {
+function getUnoCssElements(childNodes: ChildNode[], cssObjectInputsByClassToken: Map<string, CSSObjectInput[]>, layer?: string): Preflight[] {
   const preflights: Preflight[] = [];
-  flattenRules(root.nodes)
+  flattenRules(childNodes)
     .forEach((rawElement, idx) => {
       if (typeof rawElement === 'string') {
-        const p = processor.process(rawElement, { from: 'preflight', to: 'preflight' });
         preflights.push({
-          getCSS: async () => {
-            const ast = await p;
-            return ast.css;
-          },
+          getCSS: () => rawElement,
           layer
         });
         return;
       }
-      const [parents, selector, nodes] = rawElement,
+      const [parents, selector, declarations] = rawElement,
         classTokens = new Set(selector.matchAll(CSSCLASS).map(([, name]) => name));
 
       if (classTokens.size === 0) {
         throw new Error('why include this rule?');
       }
-
-      const p = processor.process(postcss.root({ nodes }), { from: 'component', to: 'component' });
 
       for (const classToken of classTokens) {
         let cssObjectInputs = cssObjectInputsByClassToken.get(classToken);
@@ -90,8 +74,8 @@ function getUnoCssElements(processor: Processor, root: Root, cssObjectInputsByCl
           cssObjectInputs = [];
           cssObjectInputsByClassToken.set(classToken, cssObjectInputs);
         }
-        cssObjectInputs.push(p.then((declarations) => [{
-          ...Object.fromEntries((declarations.root.nodes as Declaration[]).map(({ important, prop, value }) => [prop, `${value}${important ? ' !important' : ''}`])),
+        cssObjectInputs.push({
+          ...Object.fromEntries((declarations).map(({ important, prop, value }) => [prop, `${value}${important ? ' !important' : ''}`])),
           [symbols.parent]: parents.join(' $$ '),
           [symbols.selector]: (currentSelector) =>
             selector === currentSelector
@@ -100,36 +84,27 @@ function getUnoCssElements(processor: Processor, root: Root, cssObjectInputsByCl
                 return c === classToken ? currentSelector : all;
               }),
           [symbols.sort]: idx
-        }]));
+        });
       };
     });
   return preflights;
 }
 
-const defaultOptions = {
-  base: true,
-  darkTheme: 'dark',
-  rtl: false,
-  styled: true,
-  themes: false as
-  | Array<Record<string, Record<string, string>> | string>
-  | boolean,
-  utils: true
-};
-
-export function presetDaisy(userOptions: Partial<typeof defaultOptions> = {}): Preset {
-  const options = { ...defaultOptions, ...userOptions },
-    cssObjectInputsByClassToken = new Map<string, Promise<CSSObjectInput[]>[]>(),
-    classes: ['components', 'utilities'?] = ['components'],
-    styles: ['unstyled', 'styled'?] = ['unstyled'],
-    preflights: Preflight[] = [],
+export async function presetDaisy(options?: Options): Promise<Preset> {
+  const cssObjectInputsByClassToken = new Map<string, CSSObjectInput[]>(),
     processor = postcss({
-      Declaration: (decl) => {
-        decl.prop = fixCss(decl.prop);
-        decl.value = fixCss(decl.value);
+      Once(root) {
+        root.walkAtRules((atRule) => {
+          if (atRule.name === 'starting-style' && atRule.parent.type === 'rule') {
+            let value = '{';
+            (new Stringifier((str) => value += str)).body(atRule);
+            value += '}';
+            atRule.replaceWith(postcss.decl({ prop: `@${atRule.name}`, value }));
+          }
+        });
       },
       postcssPlugin: 'fix-css'
-    });
+    }, Nesting),
     /*  no need for unocss/postcss, as there's no @apply, @screen, @theme in input. Otherwise:
     createPlugin({ configOrPath: {
       configFile: false,
@@ -140,54 +115,40 @@ export function presetDaisy(userOptions: Partial<typeof defaultOptions> = {}): P
         utils: false
       })]
     } }); */
-
-  if (options.utils) {
-    preflights.push(...getUnoCssElements(processor, parse(FOLDERS['utilities/global']), cssObjectInputsByClassToken));
-    classes.push('utilities');
-  }
-  if (options.styled) {
-    styles.push('styled');
-  }
-  if (options.base) {
-    const p = processor.process(parse(FOLDERS.base), { from: 'theme', to: 'theme' });
-    preflights.push({
-      getCSS: async () => p.then(({ css }) => css),
-      layer: 'daisy-base'
-    });
-  }
-
-  functions.injectThemes(
-    (theme) => {
-      const p = processor.process(parse(theme), { from: 'theme', to: 'theme' });
-      preflights.push({
-        getCSS: async () => {
-          const ast = await p;
-          return ast.css;
-        },
-        layer: 'daisy-themes'
-      });
+    { config, handler } = typeof daisyui === 'function' ? (daisyui as (o: any) => any)(options) : daisyui,
+    preflightPromises: Promise<Preflight[]>[] = [];
+  handler({
+    addBase(jsCss: Record<string, any>) {
+      preflightPromises.push(Promise.resolve([{
+        getCSS: () => parse(jsCss).toString(),
+        layer: 'daisy-base'
+      }]));
     },
-    (key: string) => options[key.split('.')[1]],
-    themes
-  );
+    addComponents(jsCss: Record<string, any>) {
+      preflightPromises.push(
+        processor.process(parse(jsCss), { from: 'components', to: 'components' })
+          .then((ast) => getUnoCssElements(ast.root.nodes, cssObjectInputsByClassToken, 'daisy-components'))
+      );
+    },
+    addUtilities(jsCss: Record<string, any>) {
+      preflightPromises.push(
+        processor.process(parse(jsCss), { from: 'utilities', to: 'utilities' })
+          .then((ast) => getUnoCssElements(ast.root.nodes, cssObjectInputsByClassToken, 'daisy-utilities'))
+      );
+    },
+    config: (key: `${string}.${keyof Options}`) => options?.[key.split('.')[1]] // for daisyui v4
+  });
 
-  for (const folder of classes.flatMap((cls) => styles.map((style) => `${cls}/${style}`))) {
-    preflights.push(...getUnoCssElements(processor, parse(FOLDERS[folder]), cssObjectInputsByClassToken, 'daisy-components'));
-  }
-
-  const rules: DynamicRule[] = [];
+  const preflights = await Promise.all(preflightPromises).then((p) => p.flat()),
+    rules: DynamicRule[] = [];
   for (const [classToken, cssObjectInputs] of cssObjectInputsByClassToken) {
-    rules.push([new RegExp(`^${classToken}$`), async () =>
-      Promise.all(cssObjectInputs).then((multiple) => multiple.flat())]
-    );
+    rules.push([new RegExp(`^${classToken}$`), () => cssObjectInputs]);
   }
 
   return {
+    ...config,
     name: 'unocss-preset-daisy',
     preflights,
-    rules,
-    theme: {
-      colors: Object.fromEntries(Object.entries(colors as Record<string, string>).map(([key, value]) => [key, fixCss(value)]))
-    }
+    rules
   };
 }
