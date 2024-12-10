@@ -1,10 +1,13 @@
+import type { defineConfig, UserConfig } from 'vite';
 import process from 'node:process';
 import unocss from 'unocss/vite';
-import { defineConfig } from 'vite';
+import { version } from '../package.json';
 
-export default defineConfig({
+process.env.VITE_VERSION = version;
+
+export default {
   base: process.env.BASE_URL ?? '/',
   plugins: [
     unocss()
   ]
-});
+} as UserConfig;
