@@ -1,4 +1,4 @@
-import type { Container, Root } from 'postcss';
+import type { Container } from 'postcss';
 import postcss from 'postcss';
 
 // derived from https://github.com/postcss/postcss-js/blob/b3db658b932b42f6ac14ca0b1d50f50c4569805b/parser.js, MIT, Copyright 2015 Andrey Sitnik <andrey@sitnik.ru>

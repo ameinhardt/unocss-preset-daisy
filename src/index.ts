@@ -1,9 +1,8 @@
-import type { ChildNode, Declaration, Processor } from 'postcss';
+import type { ChildNode, Declaration } from 'postcss';
 import type { CSSObjectInput, DynamicRule, Preflight, Preset } from 'unocss';
 import Nesting from '@tailwindcss/nesting';
 import daisyui from 'daisyui';
 // import { createPlugin } from '@unocss/postcss/esm';
-import colors from 'daisyui/src/theming/index.js';
 import postcss from 'postcss';
 import Stringifier from 'postcss/lib/stringifier';
 import { symbols } from 'unocss';
@@ -91,7 +90,7 @@ function getUnoCssElements(childNodes: ChildNode[], cssObjectInputsByClassToken:
   return preflights;
 }
 
-export async function presetDaisy(options?: Options): Promise<Preset> {
+export async function presetDaisy(options?: Options): Promise<Preset<Record<string, any>>> {
   const cssObjectInputsByClassToken = new Map<string, CSSObjectInput[]>(),
     processor = postcss({
       Once(root) {
@@ -150,9 +149,6 @@ export async function presetDaisy(options?: Options): Promise<Preset> {
     ...config,
     name: 'unocss-preset-daisy',
     preflights,
-    rules,
-    theme: {
-      colors: Object.fromEntries(Object.entries(colors as Record<string, string>).map(([key, value]) => [key, value]))
-    }
+    rules
   };
 }

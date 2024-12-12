@@ -14,7 +14,27 @@ npm install unocss daisyui @ameinhardt/unocss-preset-daisy
 
 ## Usage
 
-> **Note**: `@unocss/reset` comes with `unocss`. If you are using pnpm, install it separately unless you enable hoisting.
+Notes:
+* `@unocss/reset` comes with `unocss`. If you are using pnpm, install it separately unless you enable hoisting.
+* Theme colors \
+  In daisyUI v4, for including theme colors, use
+  ```js
+  import colors from 'daisyui/src/theming/index.js';
+  ...
+    theme: {
+      colors
+    }
+  ```
+  In daisyUI v5, for including theme colors, use
+  ```js
+  import theme from 'daisyui/functions/variables.js';
+  ...
+    theme: {
+      ...theme
+    }
+
+  ```
+* if dev environment with `virtual:unocss-devtools` overlays css rule priority, use `safelist` to make sure the effected classes are generated. See [Edit classes in DevTools](https://unocss.dev/integrations/vite#edit-classes-in-devtools).
 
 ### Vite
 

@@ -7,7 +7,7 @@ export default config({
   },
   ignores: ['daisyui/**'],
   jsonc: true,
-  markdown: true,
+  markdown: false,
   stylistic: {
     indent: 2,
     quotes: 'single'
