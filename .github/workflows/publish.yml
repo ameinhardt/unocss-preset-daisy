@@ -14,6 +14,8 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
 
       - run: npm i -g pnpm
 
@@ -25,9 +27,13 @@ jobs:
 
       - run: pnpm install
 
+      - run: |
+          git config user.name github-actions[bot]
+          git config user.email github-actions[bot]@users.noreply.github.com
+
       - run: pnpm version ${{ github.event.inputs.version }}
 
-      - run: git push --follow-tags
+      - run: git push --follow-tags "https://${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}" "${{ github.head_ref }}"
 
       - run: pnpm publish --access public
         env:
