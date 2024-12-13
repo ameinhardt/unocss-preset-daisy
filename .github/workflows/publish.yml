@@ -1,11 +1,7 @@
 name: Publish
 
 on:
-  workflow_dispatch:
-    inputs:
-      version:
-        description: 'Version accepted by `npm version *`'
-        required: true
+  workflow_dispatch
 
 jobs:
   publish:
