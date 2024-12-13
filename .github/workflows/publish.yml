@@ -23,7 +23,7 @@ jobs:
           registry-url: https://registry.npmjs.org
 
       - name: Install and build
-        run: pnpm ci
+        run: pnpm install
 
       - run: pnpm publish --provenance --access public
         env:
