@@ -33,7 +33,7 @@ jobs:
 
       - run: pnpm version ${{ github.event.inputs.version }}
 
-      - run: git push --follow-tags "https://${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}" "${{ github.head_ref }}"
+      - run: git push --follow-tags "https://${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}" "${{ github.ref }}"
 
       - run: pnpm publish --access public
         env:
