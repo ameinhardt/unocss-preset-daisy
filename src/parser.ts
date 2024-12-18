@@ -45,18 +45,21 @@ function atRule(parent: Container, parts: string[], value: any) {
   const node = postcss.atRule({ name: parts[1], params: parts[3] || '' });
   if (typeof value === 'object') {
     node.nodes = [];
-    parse(value, node);
+    parse(value as Record<string, any>, node);
   }
   parent.push(node);
 }
 
 export default function parse(obj: Record<string, any>, parent: Container = postcss.root()): Container {
   for (const name in obj) {
-    const value = obj[name];
+    const value: unknown = obj[name];
     if (value === null || typeof value === 'undefined') {
       continue;
     } else if (name[0] === '@') {
       const parts = name.match(/@(\S+)(\s+([\s\S]*))?/);
+      if (parts == null) {
+        throw new Error('unexpected at rule name');
+      }
       if (Array.isArray(value)) {
         for (const item of value) {
           atRule(parent, parts, item);
@@ -65,7 +68,7 @@ export default function parse(obj: Record<string, any>, parent: Container = post
         atRule(parent, parts, value);
       }
     } else if (Array.isArray(value)) {
-      for (const i of value) {
+      for (const i of value as Array<false | null | number | string>) {
         decl(parent, name, i);
       }
     } else if (typeof value === 'object') {
@@ -73,7 +76,7 @@ export default function parse(obj: Record<string, any>, parent: Container = post
       parse(value, node);
       parent.push(node);
     } else {
-      decl(parent, name, value);
+      decl(parent, name, value as false | null | number | string);
     }
   }
   return parent;

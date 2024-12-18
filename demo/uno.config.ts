@@ -7,6 +7,6 @@ export default defineConfig({
   presets: [presetUno(), presetDaisy(), presetIcons()],
   theme: {
     // ...theme,
-    colors
+    colors: colors as Record<string, string>
   }
 });

@@ -1,4 +1,4 @@
-import type { ChildNode, Declaration } from 'postcss';
+import type { ChildNode, Declaration, PluginCreator } from 'postcss';
 import type { CSSObjectInput, DynamicRule, Preflight, Preset } from 'unocss';
 import Nesting from '@tailwindcss/nesting';
 import daisyui from 'daisyui';
@@ -35,7 +35,7 @@ function *flattenRules(nodes: ChildNode[], parents: string[] = []): Generator<[s
         yield [parents, node.selector, declarations];
       }
     } else if (node.type === 'atrule') {
-      if (node.nodes.length === 0) {
+      if (node.nodes == null || node.nodes.length === 0) {
         continue;
       }
       if (node.name === 'keyframes') {
@@ -76,6 +76,7 @@ function getUnoCssElements(childNodes: ChildNode[], cssObjectInputsByClassToken:
         }
         cssObjectInputs.push({
           ...Object.fromEntries((declarations).map(({ important, prop, value }) => [prop, `${value}${important ? ' !important' : ''}`])),
+          [symbols.layer]: layer,
           [symbols.parent]: parents.join(' $$ '),
           [symbols.selector]: (currentSelector) =>
             selector === currentSelector
@@ -95,7 +96,7 @@ export async function presetDaisy(options?: Options): Promise<Preset<Record<stri
     processor = postcss({
       Once(root) {
         root.walkAtRules((atRule) => {
-          if (atRule.name === 'starting-style' && atRule.parent.type === 'rule') {
+          if (atRule.name === 'starting-style' && atRule.parent?.type === 'rule') {
             let value = '{';
             (new Stringifier((str) => value += str)).body(atRule);
             value += '}';
@@ -104,7 +105,7 @@ export async function presetDaisy(options?: Options): Promise<Preset<Record<stri
         });
       },
       postcssPlugin: 'fix-css'
-    }, Nesting),
+    }, Nesting as PluginCreator<never>),
     /*  no need for unocss/postcss, as there's no @apply, @screen, @theme in input. Otherwise:
     createPlugin({ configOrPath: {
       configFile: false,
@@ -115,7 +116,8 @@ export async function presetDaisy(options?: Options): Promise<Preset<Record<stri
         utils: false
       })]
     } }); */
-    { config, handler } = typeof daisyui === 'function' ? (daisyui as (o: any) => any)(options) : daisyui,
+    // eslint-disable-next-line ts/no-unsafe-assignment
+    { config, handler }: { config: Partial<Preset<Record<string, any>>>, handler: (arg: any) => void } = typeof daisyui === 'function' ? (daisyui as (o: any) => any)(options) : daisyui,
     preflightPromises: Promise<Preflight[]>[] = [];
   handler({
     addBase(jsCss: Record<string, any>) {
@@ -136,7 +138,7 @@ export async function presetDaisy(options?: Options): Promise<Preset<Record<stri
           .then((ast) => getUnoCssElements(ast.root.nodes, cssObjectInputsByClassToken, 'daisy-utilities'))
       );
     },
-    config: (key: `${string}.${keyof Options}`) => options?.[key.split('.')[1]] // for daisyui v4
+    config: (key: `${string}.${keyof Options}`) => options?.[key.split('.')[1]] as Options[keyof Options] | undefined // for daisyui v4
   });
 
   const preflights = await Promise.all(preflightPromises).then((p) => p.flat()),

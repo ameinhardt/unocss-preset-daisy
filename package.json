@@ -15,7 +15,7 @@
   "scripts": {
     "build:demo": "vite build demo",
     "dev": "vite dev demo",
-    "build": "unbuild",
+    "build": "tsc --noEmit && unbuild",
     "prepack": "npm run build",
     "prepare": "npm run build",
     "lint": "eslint . --fix",

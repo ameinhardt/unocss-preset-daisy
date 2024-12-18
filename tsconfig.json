@@ -2,10 +2,11 @@
   "compilerOptions": {
     "target": "ESNext",
     "lib": ["ESNext", "DOM"],
-    "rootDir": "src",
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
+    "resolveJsonModule": true,
     "strict": false,
+    "strictNullChecks": true,
     "declaration": true,
     "outDir": "dist",
     "sourceMap": true,
@@ -13,7 +14,8 @@
   },
   "include": [
     "package.json",
-    "src"
+    "src",
+    "demo"
   ],
   "exclude": ["dist", "node_modules"]
 }

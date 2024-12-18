@@ -13,9 +13,7 @@ export default config({
     quotes: 'single'
   },
   typescript: {
-    typescript: {
-      tsconfigPath: 'tsconfig.json'
-    }
+    tsconfigPath: './tsconfig.json'
   }
 }, {
   rules: {
