@@ -1,7 +1,7 @@
 {
   "name": "@ameinhardt/unocss-preset-daisy",
   "type": "module",
-  "version": "1.1.2",
+  "version": "1.1.3",
   "packageManager": "pnpm@9.14.4",
   "description": "UnoCSS preset for daisyUI",
   "author": "Axel Meinhardt <axel.meinhardt@itiergarten.de> (https://www.itiergarten.de/)",
@@ -15,7 +15,7 @@
   "scripts": {
     "build:demo": "vite build demo",
     "dev": "vite dev demo",
-    "build": "unbuild",
+    "build": "tsc --noEmit && unbuild",
     "prepack": "npm run build",
     "prepare": "npm run build",
     "lint": "eslint . --fix",
@@ -31,15 +31,15 @@
     "postcss": "8.4.49"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "3.11.2",
+    "@antfu/eslint-config": "3.12.0",
     "@iconify-json/octicon": "^1.2.2",
-    "@types/node": "^22.10.1",
+    "@types/node": "^22.10.2",
     "@unocss/reset": "^0.65.1",
-    "eslint": "^9.16.0",
+    "eslint": "^9.17.0",
     "eslint-plugin-format": "^0.1.3",
     "tsx": "^4.19.2",
     "typescript": "^5.7.2",
-    "unbuild": "^2.0.0",
+    "unbuild": "^3.0.1",
     "vite": "^6.0.3"
   }
 }

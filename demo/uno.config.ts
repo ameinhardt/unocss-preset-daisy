@@ -5,8 +5,9 @@ import { presetDaisy } from '../src/index.js'; // '@ameinhardt/unocss-preset-dai
 
 export default defineConfig({
   presets: [presetUno(), presetDaisy(), presetIcons()],
+  separators: [':'],
   theme: {
     // ...theme,
-    colors
+    colors: colors as Record<string, string>
   }
 });
