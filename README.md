@@ -6,17 +6,24 @@ This daisyui preset directly uses the styles from your daisyui v4 version withou
 
 [Demo here](https://ameinhardt.github.io/unocss-preset-daisy/)
 
-## Installation
+## 🚀 Installation
 
 ```sh
 npm install unocss daisyui @ameinhardt/unocss-preset-daisy
 ```
 
-## Usage
-
-Notes:
-* `@unocss/reset` comes with `unocss`. If you are using pnpm, install it separately unless you enable hoisting.
-* Theme colors \
+## 📱 Usage
+### 📋 Notes
+* **pseudo classes** \
+  unocss preset-mini uses e.g. "file" as pseudo-class variant to style the button of file inputs while assuming ":" and "-" [as variant seperator](https://unocss.dev/config/#separators). to avoid conflicts with e.g. `file-input`, limit the sperator in your unocss config to ":" only:
+  ```
+  ...
+    separators: [':']
+  ...
+  ```
+* **Reset css** \
+  `@unocss/reset` comes with `unocss`. If you are using pnpm, install it separately unless you enable hoisting.
+* **Theme colors** \
   In daisyUI v4, for including theme colors, use
   ```js
   import colors from 'daisyui/src/theming/index.js';
@@ -34,7 +41,8 @@ Notes:
     }
 
   ```
-* if dev environment with `virtual:unocss-devtools` overlays css rule priority, use `safelist` to make sure the effected classes are generated. See [Edit classes in DevTools](https://unocss.dev/integrations/vite#edit-classes-in-devtools).
+* **Development styles** \
+  If dev environment with `virtual:unocss-devtools` overlays css rule priority, use `safelist` to make sure the effected classes are generated. See [Edit classes in DevTools](https://unocss.dev/integrations/vite#edit-classes-in-devtools).
 
 ### Vite
 
@@ -94,7 +102,7 @@ export default defineNuxtConfig({
 });
 ```
 
-## Config
+## 🛠️ Config
 
 This preset accepts [the same config as daisyUI](https://daisyui.com/docs/config/) (except for `logs` and `prefix`).
 
@@ -110,8 +118,9 @@ This preset accepts [the same config as daisyUI](https://daisyui.com/docs/config
 }
 ```
 
-## Limitations
+## ⚠️ Limitations
 
-**This is not a full daisyUI port.** All daisyUI components/utilities should work but they may not work with some UnoCSS features.
-
-**Some unused styles may be imported.** This is both due to lots of hacks being used and how UnoCSS works. However, the preset will try to figure out the minimum styles needed, thus the cost is trivial most of the time.
+* **This is not a full daisyUI port.** \
+  All daisyUI components/utilities should work but they may not work with some UnoCSS features.
+* **Some unused styles may be imported.** \
+  This is both due to lots of hacks being used and how UnoCSS works. However, the preset will try to figure out the minimum styles needed, thus the cost is trivial most of the time.

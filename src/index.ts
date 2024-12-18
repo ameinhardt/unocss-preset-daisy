@@ -19,7 +19,8 @@ interface Options {
   utils?: boolean
 }
 
-const CSSCLASS = /\.(?<name>[-\w\P{ASCII}]+)/gu;
+const CSSCLASS = /\.(?<name>[-\w\P{ASCII}]+)/gu,
+  NOMERGE = /^file-input(?:-.+)?$/;
 
 function *flattenRules(nodes: ChildNode[], parents: string[] = []): Generator<[string[], string, Declaration[]] | string> {
   for (const node of nodes) {
@@ -144,7 +145,9 @@ export async function presetDaisy(options?: Options): Promise<Preset<Record<stri
   const preflights = await Promise.all(preflightPromises).then((p) => p.flat()),
     rules: DynamicRule[] = [];
   for (const [classToken, cssObjectInputs] of cssObjectInputsByClassToken) {
-    rules.push([new RegExp(`^${classToken}$`), () => cssObjectInputs]);
+    rules.push([new RegExp(`^${classToken}$`), () => cssObjectInputs, {
+      noMerge: NOMERGE.test(classToken)
+    }]);
   }
 
   return {
