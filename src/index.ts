@@ -17,6 +17,7 @@ interface Options {
   themeRoot?: string // :root
   themes?: string[]
   utils?: boolean
+  variablePrefix: string
 }
 
 const CSSCLASS = /\.(?<name>[-\w\P{ASCII}]+)/gu,
@@ -83,8 +84,8 @@ function getUnoCssElements(childNodes: ChildNode[], cssObjectInputsByClassToken:
             selector === currentSelector
               ? selector
               : selector.replaceAll(CSSCLASS, (all, c) => {
-                return c === classToken ? currentSelector : all;
-              }),
+                  return c === classToken ? currentSelector : all;
+                }),
           [symbols.sort]: idx
         });
       };
@@ -104,6 +105,17 @@ export async function presetDaisy(options?: Options): Promise<Preset<Record<stri
             atRule.replaceWith(postcss.decl({ prop: `@${atRule.name}`, value }));
           }
         });
+        const variablePrefix = options?.variablePrefix ?? 'un-';
+        if (variablePrefix !== 'tw-') {
+          root.walkDecls((decl) => {
+            if (decl.prop.startsWith('--tw-')) {
+              decl.prop = `--${variablePrefix}${decl.prop.substring(5)}`;
+            }
+            if (decl.value.includes('var(--tw-')) {
+              decl.value = decl.value.replaceAll('var(--tw-', `var(--${variablePrefix}`);
+            }
+          });
+        }
       },
       postcssPlugin: 'fix-css'
     }, Nesting as PluginCreator<never>),
@@ -123,7 +135,7 @@ export async function presetDaisy(options?: Options): Promise<Preset<Record<stri
   handler({
     addBase(jsCss: Record<string, any>) {
       preflightPromises.push(Promise.resolve([{
-        getCSS: () => parse(jsCss).toString(),
+        getCSS: async () => processor.process(parse(jsCss), { from: 'base', to: 'base' }).then((ast) => ast.toString()),
         layer: 'daisy-base'
       }]));
     },
@@ -146,6 +158,7 @@ export async function presetDaisy(options?: Options): Promise<Preset<Record<stri
     rules: DynamicRule[] = [];
   for (const [classToken, cssObjectInputs] of cssObjectInputsByClassToken) {
     rules.push([new RegExp(`^${classToken}$`), () => cssObjectInputs, {
+      autocomplete: classToken,
       noMerge: NOMERGE.test(classToken)
     }]);
   }
