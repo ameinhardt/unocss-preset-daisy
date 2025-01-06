@@ -17,7 +17,7 @@ interface Options {
   themeRoot?: string // :root
   themes?: string[]
   utils?: boolean
-  variablePrefix: string
+  variablePrefix?: string
 }
 
 const CSSCLASS = /\.(?<name>[-\w\P{ASCII}]+)/gu,
