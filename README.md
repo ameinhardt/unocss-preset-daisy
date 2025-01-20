@@ -21,7 +21,7 @@ npm install unocss daisyui @ameinhardt/unocss-preset-daisy
     separators: [':']
   ...
   ```
-* **variable prefixes**
+* **variable prefixes** \
   By default, unocss Mini preset uses `un-` [as variable prefix](https://unocss.dev/presets/mini#variableprefix) for transformation values. DaisyUI uses Tailwinds `tw-`. This presets rewrites `tw-` to `un-`. You can define a custom prefix with `variablePrefix` option, which should align with Mini preset.
 * **Reset css** \
   `@unocss/reset` comes with `unocss`. If you are using pnpm, install it separately unless you enable hoisting.
