@@ -21,7 +21,7 @@ interface Options {
 }
 
 const CSSCLASS = /\.(?<name>[-\w\P{ASCII}]+)/gu,
-  NOMERGE = /^file-input(?:-.+)?$/;
+  NOMERGE = /^file-input(?:-.+)?|.*::-webkit-slider-runnable-track$/;
 
 function *flattenRules(nodes: ChildNode[], parents: string[] = []): Generator<[string[], string, Declaration[]] | string> {
   for (const node of nodes) {
@@ -157,9 +157,13 @@ export async function presetDaisy(options?: Options): Promise<Preset<Record<stri
   const preflights = await Promise.all(preflightPromises).then((p) => p.flat()),
     rules: DynamicRule[] = [];
   for (const [classToken, cssObjectInputs] of cssObjectInputsByClassToken) {
+    const noMerge = cssObjectInputs.some((cssObjectInput) => {
+      const selector = cssObjectInput[symbols.selector] as (selector: string) => string;
+      return cssObjectInput[symbols.selector] != null && NOMERGE.test(selector(`.${classToken}`));
+    });
     rules.push([new RegExp(`^${classToken}$`), () => cssObjectInputs, {
       autocomplete: classToken,
-      noMerge: NOMERGE.test(classToken)
+      noMerge
     }]);
   }
 
