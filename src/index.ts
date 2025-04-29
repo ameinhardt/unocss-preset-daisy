@@ -54,7 +54,7 @@ function *flattenRules(nodes: ChildNode[], parents: string[] = []): Generator<[s
 
 function getUnoCssElements(childNodes: ChildNode[], cssObjectInputsByClassToken: Map<string, CSSObjectInput[]>, layer?: string): Preflight[] {
   const preflights: Preflight[] = [];
-  flattenRules(childNodes)
+  [...flattenRules(childNodes)]
     .forEach((rawElement, idx) => {
       if (typeof rawElement === 'string') {
         preflights.push({
@@ -64,7 +64,7 @@ function getUnoCssElements(childNodes: ChildNode[], cssObjectInputsByClassToken:
         return;
       }
       const [parents, selector, declarations] = rawElement,
-        classTokens = new Set(selector.matchAll(CSSCLASS).map(([, name]) => name));
+        classTokens = new Set(Array.from(selector.matchAll(CSSCLASS), ([, name]) => name));
 
       if (classTokens.size === 0) {
         throw new Error('why include this rule?');
