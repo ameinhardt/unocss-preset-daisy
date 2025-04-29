@@ -1,7 +1,7 @@
 {
   "name": "@ameinhardt/unocss-preset-daisy",
   "type": "module",
-  "version": "1.1.6",
+  "version": "1.1.7",
   "packageManager": "pnpm@10.5.2",
   "description": "UnoCSS preset for daisyUI",
   "author": "Axel Meinhardt <axel.meinhardt@itiergarten.de> (https://www.itiergarten.de/)",
