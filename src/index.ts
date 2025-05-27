@@ -64,7 +64,7 @@ function getUnoCssElements(childNodes: ChildNode[], cssObjectInputsByClassToken:
         return;
       }
       const [parents, selector, declarations] = rawElement,
-        classTokens = new Set(Array.from(selector.matchAll(CSSCLASS).map(([, name]) => name)));
+        classTokens = new Set(Array.from(selector.matchAll(CSSCLASS), ([, name]) => name));
 
       if (classTokens.size === 0) {
         throw new Error('why include this rule?');
