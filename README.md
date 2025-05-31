@@ -48,24 +48,26 @@ npm install unocss daisyui @ameinhardt/unocss-preset-daisy
 
 ### Vite
 
+`vite.config.ts`
 ```js
 import { presetDaisy } from '@ameinhardt/unocss-preset-daisy';
-import { presetUno } from 'unocss';
+import { presetWind4 } from 'unocss';
 import unocss from 'unocss/vite';
 import { defineConfig } from 'vite';
 
 export default defineConfig({
   plugins: [
     unocss({
-      presets: [presetUno(), presetDaisy()]
+      presets: [presetWind4(), presetDaisy()]
     })
   ]
 });
 ```
 
+`main.ts`
 ```js
 import '@unocss/reset/tailwind.css';
-import 'uno.css';
+import 'virtual:uno.css';
 ```
 
 ### Astro
@@ -73,14 +75,14 @@ import 'uno.css';
 ```js
 import { presetDaisy } from '@ameinhardt/unocss-preset-daisy';
 import { defineConfig } from 'astro/config';
-import { presetUno } from 'unocss';
+import { presetWind4 } from 'unocss';
 import unocss from 'unocss/astro';
 
 export default defineConfig({
   integrations: [
     unocss({
       injectReset: true,
-      presets: [presetUno(), presetDaisy()]
+      presets: [presetWind4(), presetDaisy()]
     })
   ]
 });
@@ -93,13 +95,13 @@ To use UnoCSS with Nuxt, `@unocss/nuxt` must be installed as well.
 ```js
 import { presetDaisy } from '@ameinhardt/unocss-preset-daisy';
 import { defineNuxtConfig } from 'nuxt/config';
-import { presetUno } from 'unocss';
+import { presetWind4 } from 'unocss';
 
 export default defineNuxtConfig({
   css: ['@unocss/reset/tailwind.css'],
   modules: ['@unocss/nuxt'],
   unocss: {
-    presets: [presetUno(), presetDaisy()]
+    presets: [presetWind4(), presetDaisy()]
   }
 });
 ```
@@ -111,7 +113,7 @@ This preset accepts [the same config as daisyUI](https://daisyui.com/docs/config
 ```js
 {
   presets: [
-    presetUno(),
+    presetWind4(),
     presetDaisy({
       styled: false,
       themes: ['light', 'dark']

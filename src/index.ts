@@ -23,7 +23,7 @@ interface Options {
 const CSSCLASS = /\.(?<name>[-\w\P{ASCII}]+)/gu,
   NOMERGE = /^file-input(?:-.+)?|.*::-webkit-slider-runnable-track$/;
 
-function *flattenRules(nodes: ChildNode[], parents: string[] = []): Generator<[string[], string, Declaration[]] | string> {
+function* flattenRules(nodes: ChildNode[], parents: string[] = []): Generator<[string[], string, Declaration[]] | string> {
   for (const node of nodes) {
     if (node.type === 'comment') {
       continue;
@@ -43,7 +43,7 @@ function *flattenRules(nodes: ChildNode[], parents: string[] = []): Generator<[s
       if (node.name === 'keyframes') {
         yield node.toString();
       } else {
-        yield * flattenRules(node.nodes, [...parents, `@${node.name}${node.raws.afterName ?? ' '}${node.params ?? ''}`]);
+        yield* flattenRules(node.nodes, [...parents, `@${node.name}${node.raws.afterName ?? ' '}${node.params ?? ''}`]);
       }
     } else {
       // eslint-disable-next-line no-console
@@ -64,7 +64,7 @@ function getUnoCssElements(childNodes: ChildNode[], cssObjectInputsByClassToken:
         return;
       }
       const [parents, selector, declarations] = rawElement,
-        classTokens = new Set(Array.from(selector.matchAll(CSSCLASS).map(([, name]) => name)));
+        classTokens = new Set(Array.from(selector.matchAll(CSSCLASS), ([, name]) => name));
 
       if (classTokens.size === 0) {
         throw new Error('why include this rule?');
