@@ -9,7 +9,7 @@ const { rules, ...preset } = presetUno();
 export default defineConfig({
   presets: [presetDaisy(), {
     ...preset,
-    rules: rules!.filter(([selector]) => selector !== 'table')
+    rules: rules!.filter(([selector]) => !['/^tab(?:-(.+))?$/', 'table'].includes(selector.toString()))
   }, presetIcons()],
   separators: [':'],
   theme: {
